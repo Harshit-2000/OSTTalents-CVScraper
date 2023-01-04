@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<body>
+    <div class="page-container">
+        <div class="content-wrap">
+            <nav class="navbar">
+                <a href="{{ url_for('upload') }}">
+                    <h1>Home</h1>
+                </a>
+                <ul class='nav'>
+                    <li class="nav-item">
+                        <h4 id="current">Currently using : {{ is_active.name }}</h4>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{{ url_for('addSet') }}">Add/Select Profiles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-danger" href="{{ url_for('clearCSV') }}" data-bs-toggle="tooltip"
+                            data-bs-placement="left" title="Clears current CSV files">Clear Session</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{{ url_for('uploadKeywords') }}">Upload Formula File</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{{ url_for('addStopwords') }}">Upload Stopwords File</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="container">
+                <div class="mb-3">
+
+                    <h3>Upload Files</h3>
+                    <p>It may take a some time to get your output. Please be patient. <b> Do not upload more than 10
+                            files
+                            at once. </b></p>
+                    <b>.pdf/.doc/.docx/.txt files supported.</b> <small>(Drag and drop folder to upload all files.)</small>
+
+                    <form method="POST" action='/' class="dropzone dz-clickable" id="dropper"
+                        enctype="multipart/form-data">
+                    </form>
+
+
+                    <!-- <div class="input-group flex-nowrap">
+                        <form method="POST" enctype="multipart/form-data" class="input-group flex-nowrap">
+                            <input type="file" name="files[]" multiple="" class="form-control" required>
+                            <input type="submit" value="Submit" class="btn btn-primary">
+                        </form>
+                    </div> -->
+                </div>
+
+
+
+                <hr>
+
+                <div class="mb-3">
+                    <a class="btn btn-primary" href="{{ url_for('downloadCSV') }}">downloadCSV</a>
+                </div>
+
+
+
+            </div>
+
+            <div class='table-body'>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover table-bordered" cellspacing="0" width="100%">
+                        <!-- <thead>
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Filename</th>
+                                <th scope="col">Name of Applicant</th>
+                                <th scope="col">Primary email</th>
+                                <th scope="col">Other email</th>
+                                <th scope="col">Mobile Number</th>
+                                <th scope="col">Experience</th>
+                                <th scope="col">Original Text</th>
+                                <th scope="col">Cleaned Text</th>
+
+                            </tr>
+                        </thead> -->
+
+                        <tbody>
+                            {% for f in data %}
+
+                            <tr>
+                                <td scope="row">
+                                    {{loop.index}}
+                                </td>
+                                <td scope="row">
+                                    {{f['filename']}}
+                                </td>
+                                <td scope="row">
+                                    {{f['name']}}
+                                </td>
+                                <td scope="row">
+                                    {{f.email[0]}}
+                                </td>
+                                <td scope="row">
+                                    {{f.email[1]}}
+                                </td>
+                                <td scope="row">
+                                    {{f.phoneNo[0]}}
+                                </td>
+                                <td scope="row">
+                                    {{f.experience}}
+                                </td>
+                                </td>
+                                <td scope="row">
+                                    {{f.original_text|truncate(100)}}
+                                </td>
+                                <td scope="row">
+                                    {{f.cleaned_text|truncate(100)}}
+                                </td>
+
+                                <!-- {% for file in files %}
+                                <td scope="row">{{f['percentageCleaned' + file.name]}}%</td>
+                                <td scope="row">{{f['score' + file.name]}}</td>
+                                {% endfor %} -->
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mb-3">
+                    <h4>Improve our Algorithm.</h4>
+                    <form action="" id="name-form" method="post" onsubmit="return sendNameForm()">
+                        <label for="correctName"><b>Enter correct first name/names here.</b></label>
+                        <input type="text" class="form-control" name="correctName" id="correct-name"
+                            placeholder="Press Enter to submit.">
+                    </form>
+                    <p>
+                        <small>If the algorithm predicts a wrong name, enter correct first name or multiple first names
+                            seperated
+                            be spaces. See example below for reference.<br>
+                            <b> name1 name2 name3 </b>.</small>
+                    </p>
+                    <hr>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="personal-info">
+                <a href="https://github.com/Harshit-2000"><img class="icon"
+                        src="{{ url_for('static',filename='images/github-logo.png') }}" alt="Github"></a>
+                <a href="https://www.linkedin.com/in/harshit-singh-2000/"><img class="icon"
+                        src="{{ url_for('static',filename='images/linkedin-logo.png') }}" alt="Linkedin"></a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Show toast when submitted -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div class="toast-header">
+                <img src="{{ url_for('static', filename='images/tick.png') }}" class="rounded me-2" alt="...">
+                <strong class="me-auto">Names added successfully.</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Thankyou for making our algorithm better.
+            </div>
+        </div>
+    </div>
+    <script src="{{url_for('static', filename='js/main.js')}}"></script>
+
+</body>
+
+{% endblock %}
