@@ -41,3 +41,7 @@ Run the flask application
 flask run
 ```
 
+## Screenshots of the application
+![Screenshot (62)](https://user-images.githubusercontent.com/70425491/223393162-10e094a9-9fff-4993-9e91-dbcf5f6cfc74.png)
+
+![Screenshot (64)](https://user-images.githubusercontent.com/70425491/223393416-c5f87325-5d16-49aa-80db-7a9becf10586.png)
